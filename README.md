@@ -3,7 +3,14 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/didi/tinyid/pulls)
 
 Tinyid is a ID Generator Service. It provides a REST API and a java client for getting ids. Over 10 million QPS per single instance when using the java client.
-Support jdk version 1.7+
+Support jdk version 17+
+
+## 重构说明
+本项目基于原作者版本进行重构，主要特性如下：
+- **JDK 17**: 使用 Java 17 进行编译和运行
+- **Spring Boot 3.x**: 核心框架升级至 Spring Boot 3 系列
+- **Undertow**: 采用高性能的 Undertow 容器替代默认的 Tomcat，提升并发性能
+- **依赖优化**: 更新了 MySQL 驱动等核心依赖，适配新版本特性
 
 # Getting started
 
@@ -22,8 +29,8 @@ vi application.properties
 ```properties
 datasource.tinyid.names=primary
 
-datasource.tinyid.primary.driver-class-name=com.mysql.jdbc.Driver
-datasource.tinyid.primary.url=jdbc:mysql://ip:port/databaseName?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8
+datasource.tinyid.primary.driver-class-name=com.mysql.cj.jdbc.Driver
+datasource.tinyid.primary.url=jdbc:mysql://ip:port/databaseName?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
 datasource.tinyid.primary.username=root
 datasource.tinyid.primary.password=123456
 ```
