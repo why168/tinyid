@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -36,9 +38,13 @@ public class TinyIdTokenDAOImpl implements TinyIdTokenDAO {
             token.setToken(resultSet.getString("token"));
             token.setBizType(resultSet.getString("biz_type"));
             token.setRemark(resultSet.getString("remark"));
-            token.setCreateTime(resultSet.getDate("create_time"));
-            token.setUpdateTime(resultSet.getDate("update_time"));
+            token.setCreateTime(toLocalDateTime(resultSet.getTimestamp("create_time")));
+            token.setUpdateTime(toLocalDateTime(resultSet.getTimestamp("update_time")));
             return token;
+        }
+
+        private static LocalDateTime toLocalDateTime(Timestamp timestamp) {
+            return timestamp != null ? timestamp.toLocalDateTime() : null;
         }
     }
 }

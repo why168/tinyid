@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,7 +54,7 @@ public class TinyIdTokenServiceImpl implements TinyIdTokenService {
 
     @Override
     public boolean canVisit(String bizType, String token) {
-        if (StringUtils.isEmpty(bizType) || StringUtils.isEmpty(token)) {
+        if (!StringUtils.hasText(bizType) || !StringUtils.hasText(token)) {
             return false;
         }
         Set<String> bizTypes = token2bizTypes.get(token);

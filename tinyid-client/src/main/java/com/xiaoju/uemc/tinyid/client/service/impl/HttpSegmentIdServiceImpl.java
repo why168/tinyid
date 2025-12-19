@@ -23,7 +23,7 @@ public class HttpSegmentIdServiceImpl implements SegmentIdService {
         String response = TinyIdHttpUtils.post(url, TinyIdClientConfig.getInstance().getReadTimeout(),
                 TinyIdClientConfig.getInstance().getConnectTimeout());
         logger.info("tinyId client getNextSegmentId end, response:" + response);
-        if (response == null || "".equals(response.trim())) {
+        if (response == null || response.trim().isEmpty()) {
             return null;
         }
         SegmentId segmentId = new SegmentId();

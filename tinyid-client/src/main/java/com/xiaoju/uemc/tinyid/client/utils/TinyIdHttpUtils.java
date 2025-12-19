@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,9 +18,7 @@ public class TinyIdHttpUtils {
 
     private static final Logger logger = Logger.getLogger(TinyIdHttpUtils.class.getName());
 
-
     private TinyIdHttpUtils() {
-
     }
 
     public static String post(String url, Integer readTimeout, Integer connectTimeout) {
@@ -32,19 +31,21 @@ public class TinyIdHttpUtils {
         BufferedReader rd = null;
         StringBuilder param = new StringBuilder();
         StringBuilder sb = new StringBuilder();
-        String line = null;
+        String line;
         String response = null;
+        
         if (form != null) {
             for (Map.Entry<String, String> entry : form.entrySet()) {
                 String key = entry.getKey();
-                if (param.length() != 0) {
+                if (!param.isEmpty()) {
                     param.append("&");
                 }
                 param.append(key).append("=").append(entry.getValue());
             }
         }
+        
         try {
-            conn = (HttpURLConnection) new URL(url).openConnection();
+            conn = (HttpURLConnection) URI.create(url).toURL().openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setDoInput(true);
@@ -52,10 +53,12 @@ public class TinyIdHttpUtils {
             conn.setConnectTimeout(connectTimeout);
             conn.setUseCaches(false);
             conn.connect();
-            os = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+            
+            os = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
             os.write(param.toString());
             os.flush();
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
             while ((line = rd.readLine()) != null) {
                 sb.append(line);
             }
@@ -63,20 +66,22 @@ public class TinyIdHttpUtils {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "error post url:" + url + param, e);
         } finally {
-            try {
-                if (os != null) {
-                    os.close();
-                }
-                if (rd != null) {
-                    rd.close();
-                }
-                if (conn != null) {
-                    conn.disconnect();
-                }
-            } catch (IOException e) {
-                logger.log(Level.WARNING, "error close conn", e);
+            closeQuietly(os);
+            closeQuietly(rd);
+            if (conn != null) {
+                conn.disconnect();
             }
         }
         return response;
+    }
+
+    private static void closeQuietly(AutoCloseable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "error close resource", e);
+            }
+        }
     }
 }

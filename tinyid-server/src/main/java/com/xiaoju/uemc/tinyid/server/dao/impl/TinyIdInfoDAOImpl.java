@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -25,8 +26,8 @@ public class TinyIdInfoDAOImpl implements TinyIdInfoDAO {
         String sql = "select id, biz_type, begin_id, max_id," +
                 " step, delta, remainder, create_time, update_time, version" +
                 " from tiny_id_info where biz_type = ?";
-        List<TinyIdInfo> list = jdbcTemplate.query(sql, new Object[]{bizType}, new TinyIdInfoRowMapper());
-        if(list == null || list.isEmpty()) {
+        List<TinyIdInfo> list = jdbcTemplate.query(sql, new TinyIdInfoRowMapper(), bizType);
+        if (list == null || list.isEmpty()) {
             return null;
         }
         return list.get(0);
@@ -40,7 +41,6 @@ public class TinyIdInfoDAOImpl implements TinyIdInfoDAO {
         return jdbcTemplate.update(sql, newMaxId, id, oldMaxId, version, bizType);
     }
 
-
     public static class TinyIdInfoRowMapper implements RowMapper<TinyIdInfo> {
 
         @Override
@@ -53,10 +53,14 @@ public class TinyIdInfoDAOImpl implements TinyIdInfoDAO {
             tinyIdInfo.setStep(resultSet.getInt("step"));
             tinyIdInfo.setDelta(resultSet.getInt("delta"));
             tinyIdInfo.setRemainder(resultSet.getInt("remainder"));
-            tinyIdInfo.setCreateTime(resultSet.getDate("create_time"));
-            tinyIdInfo.setUpdateTime(resultSet.getDate("update_time"));
+            tinyIdInfo.setCreateTime(toLocalDateTime(resultSet.getTimestamp("create_time")));
+            tinyIdInfo.setUpdateTime(toLocalDateTime(resultSet.getTimestamp("update_time")));
             tinyIdInfo.setVersion(resultSet.getLong("version"));
             return tinyIdInfo;
+        }
+
+        private static java.time.LocalDateTime toLocalDateTime(Timestamp timestamp) {
+            return timestamp != null ? timestamp.toLocalDateTime() : null;
         }
     }
 }

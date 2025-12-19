@@ -22,8 +22,8 @@ public class CachedIdGenerator implements IdGenerator {
     protected volatile SegmentId current;
     protected volatile SegmentId next;
     private volatile boolean isLoadingNext;
-    private Object lock = new Object();
-    private ExecutorService executorService = Executors.newSingleThreadExecutor(new NamedThreadFactory("tinyid-generator"));
+    private final Object lock = new Object();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor(new NamedThreadFactory("tinyid-generator"));
 
     public CachedIdGenerator(String bizType, SegmentIdService segmentIdService) {
         this.bizType = bizType;

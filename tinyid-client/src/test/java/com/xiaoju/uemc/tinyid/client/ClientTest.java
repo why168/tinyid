@@ -1,7 +1,7 @@
 package com.xiaoju.uemc.tinyid.client;
 
 import com.xiaoju.uemc.tinyid.client.utils.TinyId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @Author du_imba

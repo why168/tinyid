@@ -27,7 +27,7 @@ public class IdGeneratorFactoryClient extends AbstractIdGeneratorFactory {
 
     private static final int DEFAULT_TIME_OUT = 5000;
 
-    private static String serverUrl = "http://{0}/tinyid/id/nextSegmentIdSimple?token={1}&bizType=";
+    private static final String serverUrl = "http://{0}/tinyid/id/nextSegmentIdSimple?token={1}&bizType=";
 
     private IdGeneratorFactoryClient() {
 
@@ -56,8 +56,8 @@ public class IdGeneratorFactoryClient extends AbstractIdGeneratorFactory {
         String readTimeout = properties.getProperty("tinyid.readTimeout");
         String connectTimeout = properties.getProperty("tinyid.connectTimeout");
 
-        if (tinyIdToken == null || "".equals(tinyIdToken.trim())
-                || tinyIdServer == null || "".equals(tinyIdServer.trim())) {
+        if (tinyIdToken == null || tinyIdToken.trim().isEmpty()
+                || tinyIdServer == null || tinyIdServer.trim().isEmpty()) {
             throw new IllegalArgumentException("cannot find tinyid.token and tinyid.server config in:" + location);
         }
 

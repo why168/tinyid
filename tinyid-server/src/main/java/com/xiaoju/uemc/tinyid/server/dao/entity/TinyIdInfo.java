@@ -1,6 +1,6 @@
 package com.xiaoju.uemc.tinyid.server.dao.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author du_imba
@@ -20,9 +20,9 @@ public class TinyIdInfo {
 
     private Integer remainder;
 
-    private Date createTime;
+    private LocalDateTime createTime;
 
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     private Long version;
 
@@ -82,19 +82,19 @@ public class TinyIdInfo {
         this.remainder = remainder;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public LocalDateTime getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -104,5 +104,19 @@ public class TinyIdInfo {
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    @Override
+    public String toString() {
+        return "TinyIdInfo{" +
+                "id=" + id +
+                ", bizType='" + bizType + '\'' +
+                ", beginId=" + beginId +
+                ", maxId=" + maxId +
+                ", step=" + step +
+                ", delta=" + delta +
+                ", remainder=" + remainder +
+                ", version=" + version +
+                '}';
     }
 }

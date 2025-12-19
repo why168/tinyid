@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class NamedThreadFactory implements ThreadFactory {
 
-    private final ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
 
     private final String namePrefix;
@@ -16,9 +15,6 @@ public class NamedThreadFactory implements ThreadFactory {
 
     public NamedThreadFactory(String namePrefix, boolean daemon) {
         this.daemon = daemon;
-        SecurityManager s = System.getSecurityManager();
-        group = (s != null) ? s.getThreadGroup() :
-                Thread.currentThread().getThreadGroup();
         this.namePrefix = namePrefix;
     }
 
@@ -28,9 +24,11 @@ public class NamedThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {
-        Thread t = new Thread(group, r, namePrefix + "-thread-" + threadNumber.getAndIncrement(), 0);
+        Thread t = new Thread(r, namePrefix + "-thread-" + threadNumber.getAndIncrement());
         t.setDaemon(daemon);
+        if (t.getPriority() != Thread.NORM_PRIORITY) {
+            t.setPriority(Thread.NORM_PRIORITY);
+        }
         return t;
     }
-
 }

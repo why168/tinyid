@@ -11,19 +11,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author du_imba
  */
 @RestController
-@RequestMapping("/id/")
-public class IdContronller {
+@RequestMapping("/id")
+public class IdController {
 
-    private static final Logger logger = LoggerFactory.getLogger(IdContronller.class);
+    private static final Logger logger = LoggerFactory.getLogger(IdController.class);
+
     @Autowired
     private IdGeneratorFactoryServer idGeneratorFactoryServer;
     @Autowired
@@ -33,8 +37,10 @@ public class IdContronller {
     @Value("${batch.size.max}")
     private Integer batchSizeMax;
 
-    @RequestMapping("nextId")
-    public Response<List<Long>> nextId(String bizType, Integer batchSize, String token) {
+    @GetMapping("/nextId")
+    public Response<List<Long>> nextId(@RequestParam String bizType,
+                                        @RequestParam(required = false) Integer batchSize,
+                                        @RequestParam String token) {
         Response<List<Long>> response = new Response<>();
         Integer newBatchSize = checkBatchSize(batchSize);
         if (!tinyIdTokenService.canVisit(bizType, token)) {
@@ -64,34 +70,33 @@ public class IdContronller {
         return batchSize;
     }
 
-    @RequestMapping("nextIdSimple")
-    public String nextIdSimple(String bizType, Integer batchSize, String token) {
+    @GetMapping("/nextIdSimple")
+    public String nextIdSimple(@RequestParam String bizType,
+                               @RequestParam(required = false) Integer batchSize,
+                               @RequestParam String token) {
         Integer newBatchSize = checkBatchSize(batchSize);
         if (!tinyIdTokenService.canVisit(bizType, token)) {
             return "";
         }
-        String response = "";
         try {
             IdGenerator idGenerator = idGeneratorFactoryServer.getIdGenerator(bizType);
             if (newBatchSize == 1) {
-                Long id = idGenerator.nextId();
-                response = id + "";
+                return String.valueOf(idGenerator.nextId());
             } else {
                 List<Long> idList = idGenerator.nextId(newBatchSize);
-                StringBuilder sb = new StringBuilder();
-                for (Long id : idList) {
-                    sb.append(id).append(",");
-                }
-                response = sb.deleteCharAt(sb.length() - 1).toString();
+                return idList.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(","));
             }
         } catch (Exception e) {
             logger.error("nextIdSimple error", e);
         }
-        return response;
+        return "";
     }
 
-    @RequestMapping("nextSegmentId")
-    public Response<SegmentId> nextSegmentId(String bizType, String token) {
+    @GetMapping("/nextSegmentId")
+    public Response<SegmentId> nextSegmentId(@RequestParam String bizType,
+                                              @RequestParam String token) {
         Response<SegmentId> response = new Response<>();
         if (!tinyIdTokenService.canVisit(bizType, token)) {
             response.setCode(ErrorCode.TOKEN_ERR.getCode());
@@ -109,20 +114,19 @@ public class IdContronller {
         return response;
     }
 
-    @RequestMapping("nextSegmentIdSimple")
-    public String nextSegmentIdSimple(String bizType, String token) {
+    @GetMapping("/nextSegmentIdSimple")
+    public String nextSegmentIdSimple(@RequestParam String bizType,
+                                      @RequestParam String token) {
         if (!tinyIdTokenService.canVisit(bizType, token)) {
             return "";
         }
-        String response = "";
         try {
             SegmentId segmentId = segmentIdService.getNextSegmentId(bizType);
-            response = segmentId.getCurrentId() + "," + segmentId.getLoadingId() + "," + segmentId.getMaxId()
+            return segmentId.getCurrentId() + "," + segmentId.getLoadingId() + "," + segmentId.getMaxId()
                     + "," + segmentId.getDelta() + "," + segmentId.getRemainder();
         } catch (Exception e) {
             logger.error("nextSegmentIdSimple error", e);
         }
-        return response;
+        return "";
     }
-
 }
