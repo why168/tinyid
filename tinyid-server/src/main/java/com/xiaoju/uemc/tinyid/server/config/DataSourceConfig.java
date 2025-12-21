@@ -40,6 +40,10 @@ public class DataSourceConfig {
         routingDataSource.setDataSourceKeys(dataSourceKeys);
         
         // 多个数据源
+        if (names == null || names.isEmpty()) {
+            logger.error("datasource.tinyid.names is empty");
+            throw new IllegalStateException("datasource.tinyid.names is empty");
+        }
         for (String name : names.split(SEP)) {
             DataSource dataSource = buildDataSource(dataSourceType, name);
             targetDataSources.put(name, dataSource);

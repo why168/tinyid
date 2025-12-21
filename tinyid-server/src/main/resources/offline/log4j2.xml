@@ -4,16 +4,20 @@
 
     <Properties>
         <Property name="log-path">./logs/</Property>
+        <!-- 控制台彩色日志格式 -->
+        <Property name="CONSOLE_LOG_PATTERN">%d{HH:mm:ss,SSS} %clr{[%thread]}{magenta} %clr{%highlight{%-5level}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=cyan, TRACE=blue} %clr{%logger{1.}}{cyan} - %msg%n</Property>
+        <!-- 文件日志格式（无颜色） -->
+        <Property name="FILE_LOG_PATTERN">%d{yyyy-MM-dd HH:mm:ss,SSS} [%thread] [%-5level] %logger{1.} - %msg%n</Property>
     </Properties>
     <!--先定义所有的appender-->
     <appenders>
-        <!--这个输出控制台的配置-->
+        <!--这个输出控制台的配置，启用 ANSI 彩色输出-->
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%date{HH:mm:ss,SSS} [%thread] [%level] %logger{1.} - %msg%n"/>
+            <PatternLayout pattern="${CONSOLE_LOG_PATTERN}" disableAnsi="false"/>
         </Console>
         <RollingFile name="ServerRollingFile" fileName="${log-path}/tinyid-server.log"
                      filePattern="${log-path}/tinyid-server.log.%d{yyyyMMddHH}">
-            <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss,SSS} [%thread] [%level] %logger{1.} - %msg%n"/>
+            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
             </Policies>

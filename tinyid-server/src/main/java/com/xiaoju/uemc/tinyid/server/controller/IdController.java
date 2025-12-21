@@ -38,9 +38,9 @@ public class IdController {
     private Integer batchSizeMax;
 
     @GetMapping("/nextId")
-    public Response<List<Long>> nextId(@RequestParam String bizType,
-                                        @RequestParam(required = false) Integer batchSize,
-                                        @RequestParam String token) {
+    public Response<List<Long>> nextId(@RequestParam("bizType") String bizType,
+                                        @RequestParam(value = "batchSize", required = false) Integer batchSize,
+                                        @RequestParam("token") String token) {
         Response<List<Long>> response = new Response<>();
         Integer newBatchSize = checkBatchSize(batchSize);
         if (!tinyIdTokenService.canVisit(bizType, token)) {
@@ -71,9 +71,9 @@ public class IdController {
     }
 
     @GetMapping("/nextIdSimple")
-    public String nextIdSimple(@RequestParam String bizType,
-                               @RequestParam(required = false) Integer batchSize,
-                               @RequestParam String token) {
+    public String nextIdSimple(@RequestParam("bizType") String bizType,
+                               @RequestParam(value = "batchSize", required = false) Integer batchSize,
+                               @RequestParam("token") String token) {
         Integer newBatchSize = checkBatchSize(batchSize);
         if (!tinyIdTokenService.canVisit(bizType, token)) {
             return "";
@@ -95,8 +95,8 @@ public class IdController {
     }
 
     @GetMapping("/nextSegmentId")
-    public Response<SegmentId> nextSegmentId(@RequestParam String bizType,
-                                              @RequestParam String token) {
+    public Response<SegmentId> nextSegmentId(@RequestParam("bizType") String bizType,
+                                              @RequestParam("token") String token) {
         Response<SegmentId> response = new Response<>();
         if (!tinyIdTokenService.canVisit(bizType, token)) {
             response.setCode(ErrorCode.TOKEN_ERR.getCode());
@@ -115,8 +115,8 @@ public class IdController {
     }
 
     @GetMapping("/nextSegmentIdSimple")
-    public String nextSegmentIdSimple(@RequestParam String bizType,
-                                      @RequestParam String token) {
+    public String nextSegmentIdSimple(@RequestParam("bizType") String bizType,
+                                      @RequestParam("token") String token) {
         if (!tinyIdTokenService.canVisit(bizType, token)) {
             return "";
         }
