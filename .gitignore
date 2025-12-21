@@ -14,4 +14,4 @@ target/
 *.ipr
 output/*
 logs/*
-
+.vscode
