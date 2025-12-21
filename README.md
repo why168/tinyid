@@ -98,7 +98,11 @@ curl 'http://localhost:9999/tinyid/id/nextId?bizType=test&token=0f673adf80504e2e
 curl 'http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&token=0f673adf80504e2eaa552f5d791b644c'
 ```
 
-响应：`3`
+响应：
+
+```json
+3
+```
 
 ### 3. 批量获取 ID
 
@@ -106,7 +110,11 @@ curl 'http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&token=0f673adf80
 curl 'http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&token=0f673adf80504e2eaa552f5d791b644c&batchSize=10'
 ```
 
-响应：`4,5,6,7,8,9,10,11,12,13`
+响应：
+
+```json
+4,5,6,7,8,9,10,11,12,13
+```
 
 ### 4. 获取奇数序列 ID
 
@@ -116,7 +124,11 @@ curl 'http://localhost:9999/tinyid/id/nextIdSimple?bizType=test&token=0f673adf80
 curl 'http://localhost:9999/tinyid/id/nextIdSimple?bizType=test_odd&batchSize=10&token=0f673adf80504e2eaa552f5d791b644c'
 ```
 
-响应：`3,5,7,9,11,13,15,17,19,21`
+响应：
+
+```json
+3,5,7,9,11,13,15,17,19,21
+```
 
 ---
 
